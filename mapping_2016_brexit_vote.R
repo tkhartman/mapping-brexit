@@ -31,7 +31,8 @@ brexit$id <- 0:380
 ## Display 'Leave' vote share from highest to lowest
 brexit$Pct_Leave <- as.numeric(brexit$Pct_Leave)  # Percentage of leave vote share by administrative area
 brexit2 <- subset(brexit, select = c("Area", "Pct_Remain", "Pct_Leave"))  # Subset the data
-brexit2 <- brexit2[order(-Pct_Leave), ]  # Sort areas by the 'Leave' vote
+brexit2 <- brexit2[order(-Pct_Leave), ]  # Display the 'Leave' vote by area
+print(brexit2[order(-Pct_Leave), ], nrows = 382)  # Display the 'Leave' vote by area
 
 bar.plot <- gvisBarChart(brexit2, xvar = "Area", yvar = "Pct_Leave", 
                          options = list(legend = "none",
