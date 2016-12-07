@@ -41,6 +41,10 @@ bar.plot <- gvisBarChart(brexit2, xvar = "Area", yvar = "Pct_Leave",
                                         width= 800, height = 10000) )
 plot(bar.plot)
 
+## Save the bar chart
+bar.plot$html$chart
+cat(bar.plot$html$chart, file = "brexit.bar.plot.html")
+
 ##' UK ESRI shapefile
 ## Download and import from the web (or get from Github)
 url.shp <- "https://t.co/GYqX2PCqJ0"
