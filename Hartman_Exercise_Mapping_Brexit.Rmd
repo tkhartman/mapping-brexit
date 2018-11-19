@@ -96,23 +96,25 @@ plot(bar.plot.2)
 ```
 
 ## Creating the Brexit Map
-To make a map, we first need to draw the boundaries so that we can overlay the points or shading from our spatial data analysis. R has libraries of these maps in avarious; however, not all maps are available. Sometimes it's necessary to load what's call a *shapefile*, which contains the longitude and latitude for all of the borders of the map we want to draw. This is what we'll need to use to draw the EU Referendum constituencies (excluding Gibraltar).
+To make a map, we first need to draw the boundaries so that we can overlay the points or shading for our spatial data analysis. R has libraries for many of these maps; however, not all maps are available. Sometimes it's necessary to load what's call a *shapefile*, which contains the longitude and latitude for all of the borders of the map we want to draw. This is what we'll need to use to draw the EU Referendum constituencies (excluding Gibraltar and Northern Ireland).
 
-The shapefile (.shp) can be downloaded from Github (it's originally from Ordinance Survey). Make sure the file is downloaded to your working directory or R will be unable to import it. We're going to be using the `read_sf()` function from the `sf` package. The code below will automate this process (download the file, unzip it, and import the .shp into R), but you can do this manually if you encounter any errors.
+The shapefile is contained in a compressed .7z format and can be downloaded directly from Github (the file is originally from Ordinance Survey). Make sure that the file is downloaded to your working directory or R will be unable to import it. Note that you'll need a separate program that can unzip .7z files (see https://www.7-zip.org/download.html).
+
+We're also going to be using the `read_sf()` function from the `sf` package to load the unzipped file into R. The code below will automate this process (download the file, unzip it, and import the .shp into R), but you can do this manually if you encounter any errors.
 
 ```{r, echo=TRUE}
 ## Download location and file name
-url.shp <- "https://github.com/tkhartman/mapping-brexit/raw/master/esri.zip"
-file.zip <- "eu_ref_esri.zip"
+url.shp <- "https://github.com/tkhartman/mapping-brexit/raw/master/eu_ref_esri.7z"
+file.zip <- "eu_ref_esri.7z"
 
 ## Download shapefile if it's not present
 if (!file.exists(file.zip)) 
     download.file(url = url.shp, destfile = file.zip, mode = "wb")
 
-## Unzip to a folder named 'shp'
-file.shp <- unzip(file.zip, exdir = "shp")
+## NOTE: Manually unzip using a program like 7-zip
+## https://www.7-zip.org/download.html
 
-## Import the .shp file into R
+## Once unzipped, import the .shp file into R
 ## dsn = folder name; layer = file names begin with...
 uk.shp <- read_sf(dsn ="shp", layer = "district_borough_unitary_region")
 
