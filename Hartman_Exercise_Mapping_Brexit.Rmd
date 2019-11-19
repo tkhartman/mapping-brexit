@@ -120,7 +120,7 @@ uk.shp <- read_sf(dsn ="shp", layer = "district_borough_unitary_region")
 
 ```
 
-We’re almost ready to create the map, but we need to fix a few things. For instance, we need to remove Gibraltar because it’s too far away from the rest of the UK to be mapped properly. And we'll remove Northern Ireland because it’s not in the UK shapefile we downloaded from Ordinance Survey. 
+We're almost ready to create the map, but we need to fix a few things. For instance, we need to remove Gibraltar because it's too far away from the rest of the UK to be mapped properly. And we'll remove Northern Ireland because it's not in the UK shapefile we downloaded from Ordinance Survey. 
 
 ```{r, echo=TRUE}
 ## Convert factor variable to string for easy recoding later
