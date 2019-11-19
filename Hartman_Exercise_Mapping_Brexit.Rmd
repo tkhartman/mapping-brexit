@@ -50,7 +50,7 @@ We're going to do one other thing, which is to tell R that we only want to downl
 
 ```{r, echo=TRUE}
 ## Enter the URL and extract the file name
-url.df <- "https://goo.gl/Bk1vq6"
+url.df <- "https://bit.ly/2QwtpUo"
 file.df <- "EU-referendum-result-data.csv"
 
 ## Only download the file if it doesn't exist in the working directory
@@ -98,21 +98,21 @@ plot(bar.plot.2)
 ## Creating the Brexit Map
 To make a map, we first need to draw the boundaries so that we can overlay the points or shading for our spatial data analysis. R has libraries for many of these maps; however, not all maps are available. Sometimes it's necessary to load what's call a *shapefile*, which contains the longitude and latitude for all of the borders of the map we want to draw. This is what we'll need to use to draw the EU Referendum constituencies (excluding Gibraltar and Northern Ireland).
 
-The shapefile is contained in a compressed .7z format and can be downloaded directly from Github (the file is originally from Ordinance Survey). Make sure that the file is downloaded to your working directory or R will be unable to import it. Note that you'll need a separate program that can unzip .7z files (see https://www.7-zip.org/download.html).
+The shapefile is contained in a compressed .zip format and can be downloaded directly from Github (the file is originally from Ordinance Survey). Make sure that the file is downloaded to your working directory or R will be unable to import it.
 
 We're also going to be using the `read_sf()` function from the `sf` package to load the unzipped file into R. The code below will automate this process (download the file, unzip it, and import the .shp into R), but you can do this manually if you encounter any errors.
 
 ```{r, echo=TRUE}
 ## Download location and file name
-url.shp <- "https://github.com/tkhartman/mapping-brexit/raw/master/eu_ref_esri.7z"
-file.zip <- "eu_ref_esri.7z"
+url.shp <- "https://github.com/tkhartman/mapping-brexit/raw/master/eu_ref_esri.zip"
+file.zip <- "eu_ref_esri.zip"
 
 ## Download shapefile if it's not present
 if (!file.exists(file.zip)) 
     download.file(url = url.shp, destfile = file.zip, mode = "wb")
 
-## NOTE: Manually unzip using a program like 7-zip
-## https://www.7-zip.org/download.html
+## Unzip the file
+unzip(file.zip, exdir = "shp")
 
 ## Once unzipped, import the .shp file into R
 ## dsn = folder name; layer = file names begin with...
@@ -174,12 +174,15 @@ names(brexit.sub) <- c("CODE", "Pct_Leave")
 uk.df <- merge(brexit.sub, uk.shp, by = "CODE")
 ```
 
-Now we're ready to create the basic map using `ggplot`. It's a powerful package for data visualization written by Hadley Wickham. The plot takes a minute or two to complete, so be patient! It should be saved as a .pdf file in your working directory (if it appears blank, try opening it with Adobe Reader).
+Now we're ready to create the basic map using `ggplot`. It's a powerful package for data visualization written by Hadley Wickham. The plot takes some time to complete, so be patient! Or as I have done below, save gthe plot as a .pdf to avoid long wait times (it will be saved as a .pdf file in your working directory; if it appears blank, try opening it with Adobe Reader). We use the `ggplot()` function and input the dataframe `uk.df`. Next we use the `geom_sf()` function to add the choropleth to the raw boundary shapefile (e.g., `fill = Pct_Leave`).
 
 ```{r, echo=TRUE}
 ## Mapping Brexit vote share using ggplot
 brexit.map <- ggplot(uk.df) + 
-    geom_sf(aes(fill = Pct_Leave)) 
+    geom_sf(data = uk.df, 
+            aes(geometry = geometry, 
+                fill = Pct_Leave)) 
+brexit.map
 ggsave("brexit_map.pdf", brexit.map)  # Export to .pdf to save time!
 ```
 
@@ -188,7 +191,10 @@ Again, we can make this look nicer by tweaking the options for the `ggplot()` fu
 ```{r, echo=TRUE}
 ## Mapping Brexit vote share again using ggplot
 brexit.map2 <- ggplot(uk.df) +
-    geom_sf(aes(fill = Pct_Leave)) +
+    geom_sf(data = uk.df, 
+            aes(geometry = geometry, 
+                fill = Pct_Leave)) +
+  ## Add other options to make the map look nicer
     scale_fill_distiller(palette = "RdBu") +  # Choose colours
     ggtitle("Brexit Map: 2016 EU Referendum Vote Share") +  # Title
     labs(fill = "Leave (%)") +  # Legend label
